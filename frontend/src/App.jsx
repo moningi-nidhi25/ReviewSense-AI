@@ -1,9 +1,27 @@
+import { Routes, Route } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Card from "./components/Card";
+
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+import About from "./pages/About";
+
 function App() {
   return (
-    <div className="bg-gray-300 text-4xl font-bold text-center text-rose-600  w-3/4 mt-10 mx-auto p-5 rounded-lg shadow-xl ">
-      ReviewSense AI
+    <div>
+      <Navbar />
+      <main className="px-4 py-8 min-h-screen">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/pages/Dashboard" element={<Dashboard />} />
+          <Route path="/pages/About" element={<About />} />
+        </Routes>
+      </main>
+      <Footer />
     </div>
   );
-}     
+}
 
 export default App;
