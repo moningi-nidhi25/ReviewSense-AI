@@ -2,7 +2,7 @@ import Card from "../components/Card";
 
 function Dashboard() {
   return (
-    <div className="justify-center">
+    <div className="justify-center py-10">
       <div className="flex flex-wrap gap-4 mb-8">
         <Card
           title="Sentiment Overview"

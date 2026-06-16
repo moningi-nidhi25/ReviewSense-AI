@@ -1,6 +1,6 @@
 function Hero() {
   return (
-    <section className="text-center py-20 px-6">
+    <section className="text-center pt-5 pb-10 px-6">
       <h1 className="text-5xl font-bold mb-6">
         Understand Guest Feedback with AI
       </h1>
