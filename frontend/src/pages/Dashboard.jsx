@@ -2,8 +2,8 @@ import Card from "../components/Card";
 
 function Dashboard() {
   return (
-    <div className="justify-center py-10">
-      <div className="flex flex-wrap gap-4 mb-8">
+    <div className="justify-center py-10 dark:bg-gray-900 min-h-screen">
+      <div className="flex flex-wrap gap-4 mb-8 dark:bg-gray-900">
         <Card
           title="Sentiment Overview"
           description="Recent guest reviews show 78% positive sentiment, 15% neutral feedback, and 7% negative comments."

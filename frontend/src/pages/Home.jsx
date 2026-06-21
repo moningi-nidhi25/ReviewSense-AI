@@ -5,13 +5,13 @@ export default function Home() {
   return (
     <>
       
-      <section className="py-8">
+      <section className="py-8 dark:bg-gray-900">
         <Hero />
-        <h2 className="text-3xl font-bold text-center mb-6">
+        <h2 className="text-3xl font-bold text-center mb-6 dark:text-white">
           Key Features
         </h2>
 
-        <div className="flex flex-wrap justify-center gap-6">
+        <div className="flex flex-wrap justify-center gap-6 dark:bg-gray-900">
           <Card
             title="Sentiment Analysis"
             description="Automatically classify guest reviews as positive, negative, or neutral."
