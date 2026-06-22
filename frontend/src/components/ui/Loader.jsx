@@ -1,3 +1,13 @@
+
+/**
+ * Loader Component
+ *
+ * @param {Object} props
+ * @param {"sm" | "md" | "lg"} [props.size="md"] - Loader size.
+ * @param {string} [props.color="border-green-600"] - Loader color.
+ * @param {string} [props.className] - Additional Tailwind CSS classes.
+ */
+
 export default function Loader({
   size = "md",
   color = "border-green-600",

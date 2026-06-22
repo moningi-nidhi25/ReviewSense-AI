@@ -1,3 +1,15 @@
+/**
+ * Button Component
+ *
+ * @param {Object} props
+ * @param {React.ReactNode} props.children - Content displayed inside the button.
+ * @param {"primary" | "secondary" | "outline"} [props.variant="primary"] - Button style variant.
+ * @param {"sm" | "md" | "lg"} [props.size="md"] - Button size.
+ * @param {boolean} [props.disabled=false] - Disables the button.
+ * @param {Function} [props.onClick] - Function called when the button is clicked.
+ * @param {"button" | "submit" | "reset"} [props.type="button"] - HTML button type.
+ * @param {string} [props.className] - Additional Tailwind CSS classes.
+ */
 export default function Button({
   children,
   variant = "primary",

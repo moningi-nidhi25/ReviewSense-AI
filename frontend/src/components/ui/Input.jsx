@@ -1,3 +1,17 @@
+/**
+ * Input Component
+ *
+ * @param {Object} props
+ * @param {string} props.label - Input label.
+ * @param {string} [props.placeholder] - Placeholder text.
+ * @param {string} [props.type="text"] - Input type.
+ * @param {string} props.value - Input value.
+ * @param {Function} props.onChange - Change event handler.
+ * @param {string} [props.error] - Error message displayed below the input.
+ * @param {boolean} [props.disabled=false] - Disables the input.
+ * @param {string} [props.className] - Additional CSS classes.
+ */
+
 export default function Input({
   label,
   placeholder = "",

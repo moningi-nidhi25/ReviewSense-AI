@@ -1,5 +1,15 @@
 import { useEffect, useRef } from "react";
 
+/**
+ * Modal Component
+ *
+ * @param {Object} props
+ * @param {boolean} props.isOpen - Whether the modal is open.
+ * @param {Function} props.onClose - Function called when the modal is closed.
+ * @param {string} props.title - Modal title.
+ * @param {React.ReactNode} props.children - Content displayed inside the modal.
+ */
+
 export default function Modal({
   isOpen,
   onClose,

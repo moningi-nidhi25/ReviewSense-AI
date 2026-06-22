@@ -1,4 +1,11 @@
 import { Toaster, toast } from "react-hot-toast";
+/**
+ * Toast Component
+ *
+ * Renders the global toast notification container.
+ * Use helper functions (showSuccessToast, showErrorToast, showLoadingToast, dismissToast)
+ * to trigger notifications.
+ */
 
 export default function Toast() {
   return (
