@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Demo from "./pages/Demo";
+import Reviews from "./pages/Reviews";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path="/pages/About" element={<About />} />
           <Route path="/pages/Login" element={<Login />} />
           <Route path="/pages/Demo" element={<Demo />} />
+          <Route path="/pages/Reviews" element={<Reviews />} />
         </Routes>
       </main>
       <Footer />

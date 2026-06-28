@@ -11,6 +11,7 @@ function Navbar() {
         <li ><Link to="/">Home</Link></li>
         <li ><Link to="/pages/About">About</Link></li>
         <li ><Link to="/pages/Dashboard">Dashboard</Link></li>
+        <li ><Link to="/pages/Reviews">Reviews</Link></li>
         <li ><Link to="/pages/Demo">Demo</Link></li>
       </ul>
       <ThemeToggle />

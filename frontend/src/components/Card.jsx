@@ -2,6 +2,8 @@ function Card({
   title,
   description,
   image,
+  sentiment,
+  theme,
   action,
 }) {
   return (
@@ -23,9 +25,26 @@ function Card({
           {description}
         </p>
 
+        {(sentiment || theme) && (
+          <div className="flex justify-between mb-4">
+            {sentiment && (
+              <span className="rounded bg-green-100 px-3 py-1 text-sm text-green-700">
+                {sentiment}
+              </span>
+            )}
+
+            {theme && (
+              <span className="rounded bg-blue-100 px-3 py-1 text-sm text-blue-700">
+                {theme}
+              </span>
+            )}
+          </div>
+        )}
+
         {action && action}
       </div>
     </div>
   );
 }
+
 export default Card;
