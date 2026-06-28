@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import { getReviews } from "../services/api";
 import {
   Loader,
   Toast,
@@ -16,7 +16,7 @@ export default function Reviews() {
 
   const fetchReviews = async () => {
     try {
-      const response = await api.get("/reviews");
+      const response = await getReviews();
       setReviews(response.data);
     } catch (error) {
       console.error(error);
