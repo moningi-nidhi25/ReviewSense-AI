@@ -3,6 +3,7 @@ import {
   getReviews,
   searchReviews,
   createReview,
+  updateReview,
   deleteReview,
 } from "../services/api";
 import {
@@ -71,14 +72,14 @@ export default function Reviews() {
       if (isEditing) {
         await updateReview(editingId, {
           guest_name: guestName.trim(),
-          review: reviewText.trim(),
+          reviews: reviewText.trim(),
         });
 
         showSuccessToast("Review updated successfully!");
       } else {
         await createReview({
           guest_name: guestName.trim(),
-          review: reviewText.trim(),
+          reviews: reviewText.trim(),
         });
 
         showSuccessToast(
@@ -126,7 +127,7 @@ export default function Reviews() {
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
 
     setIsEditing(false);
@@ -134,7 +135,8 @@ export default function Reviews() {
 
     setGuestName("");
     setReviewText("");
-  };
+    setFormError("");
+  }, []);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 

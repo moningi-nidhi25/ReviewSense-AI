@@ -10,7 +10,7 @@ from database import supabase
 app = FastAPI()
 @app.get("/test-db")
 def test_db():
-    response = supabase.table("reviews").select("*").execute()
+    response = supabase.table("reviews_table").select("*").execute()
     return response.data
 
 origins = [
@@ -30,22 +30,21 @@ app.add_middleware(
 
 class Review(BaseModel):
     guest_name: str
-    review: str
-    sentiment: str
-    theme: str
+    reviews: str
+    
 
 @app.get("/api/reviews", status_code=200)
 def get_reviews():
-    response = supabase.table("reviews").select("*").execute()
+    response = supabase.table("reviews_table").select("*").execute()
     return response.data
 
 @app.get("/api/reviews/search", status_code=200)
 def search_reviews(q: str):
     response = (
         supabase
-        .table("reviews")
+        .table("reviews_table")
         .select("*")
-        .ilike("review", f"%{q}%")
+        .or_(f"guest_name.ilike.%{q}%,reviews.ilike.%{q}%")
         .execute()
     )
 
@@ -55,7 +54,7 @@ def search_reviews(q: str):
 def get_review(review_id: int):
     response = (
         supabase
-        .table("reviews")
+        .table("reviews_table")
         .select("*")
         .eq("id", review_id)
         .execute()
@@ -69,16 +68,21 @@ def get_review(review_id: int):
 
     return response.data[0]
 
-@app.post("/api/reviews", status_code=201)
+@app.post("/api/reviews")
 def create_review(review: Review):
+
+    # Later AI will generate these
+    sentiment = "Neutral"
+    theme = "General"
+
     response = (
         supabase
-        .table("reviews")
+        .table("reviews_table")
         .insert({
             "guest_name": review.guest_name,
-            "review": review.review,
-            "sentiment": review.sentiment,
-            "theme": review.theme,
+            "reviews": review.reviews,
+            "sentiments": sentiment,
+            "theme": theme,
         })
         .execute()
     )
@@ -89,12 +93,10 @@ def create_review(review: Review):
 def update_review(review_id: int, updated_review: Review):
     response = (
         supabase
-        .table("reviews")
+        .table("reviews_table")
         .update({
             "guest_name": updated_review.guest_name,
-            "review": updated_review.review,
-            "sentiment": updated_review.sentiment,
-            "theme": updated_review.theme,
+            "reviews": updated_review.reviews,
         })
         .eq("id", review_id)
         .execute()
@@ -112,7 +114,7 @@ def update_review(review_id: int, updated_review: Review):
 def delete_review(review_id: int):
     response = (
         supabase
-        .table("reviews")
+        .table("reviews_table")
         .delete()
         .eq("id", review_id)
         .execute()

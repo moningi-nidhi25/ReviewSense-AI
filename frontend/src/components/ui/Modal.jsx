@@ -20,23 +20,22 @@ export default function Modal({
 
   // Close on Escape key
   useEffect(() => {
-    const handleKeyDown = (e) => {
+    if (!isOpen) return;
+
+    const handleEscape = (e) => {
       if (e.key === "Escape") {
         onClose();
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleEscape);
 
-      // Focus modal when opened
-      modalRef.current?.focus();
-    }
+    modalRef.current?.focus();
 
     return () => {
-      document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("keydown", handleEscape);
     };
-  }, [isOpen, onClose]);
+  }, [isOpen]);
 
   // Basic focus trap
   const handleKeyDown = (e) => {
