@@ -1,2 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss";
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Field Notes palette */
+  --color-paper: #edefe4;
+  --color-card: #fbfaf2;
+  --color-ink: #16241c;
+  --color-ink-soft: #44513f;
+  --color-forest: #2f6b4f;
+  --color-forest-deep: #1f4d38;
+  --color-clay: #9c4a2e;
+  --color-ochre: #b98b2e;
+  --color-line: #c9c2ac;
+
+  /* Dark "night notebook" variants */
+  --color-paper-dark: #14180f;
+  --color-card-dark: #1d2317;
+  --color-ink-dark: #e9eadf;
+  --color-ink-soft-dark: #a5b096;
+  --color-forest-dark: #56a37d;
+  --color-clay-dark: #d0805f;
+  --color-ochre-dark: #dcae4c;
+  --color-line-dark: #333b28;
+
+  --font-display: "Zilla Slab", Georgia, serif;
+  --font-label: "JetBrains Mono", ui-monospace, monospace;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  .dark body {
+    background-color: var(--color-paper-dark);
+    color: #e9eadf;
+  }
+
+  ::selection {
+    background-color: var(--color-forest);
+    color: var(--color-card);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-forest);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .paper-border {
+    border-color: var(--color-line);
+  }
+  .dark .paper-border {
+    border-color: var(--color-line-dark);
+  }
+}

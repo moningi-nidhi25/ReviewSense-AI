@@ -25,7 +25,7 @@ export default function Input({
   return (
     <div className="w-full">
       {label && (
-        <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label className="mb-1.5 block font-label text-xs font-semibold uppercase tracking-wide text-ink-soft dark:text-ink-soft-dark">
           {label}
         </label>
       )}
@@ -37,30 +37,21 @@ export default function Input({
         placeholder={placeholder}
         disabled={disabled}
         className={`
-          w-full rounded-lg border
-          border-gray-300
-          bg-white
-          px-4 py-2.5
-          text-gray-900
-          placeholder-gray-400
+          w-full rounded-md border bg-card
+          px-4 py-2.5 text-ink placeholder-ink-soft/50
           transition
-          focus:border-green-500
-          focus:outline-none
-          focus:ring-2
-          focus:ring-green-400
-          disabled:cursor-not-allowed
-          disabled:bg-gray-100
-          dark:border-gray-600
-          dark:bg-gray-800
-          dark:text-white
-          dark:placeholder-gray-500
-          ${error ? "border-red-500 focus:ring-red-400" : ""}
+          border-line
+          focus:border-forest focus:outline-none focus:ring-2 focus:ring-forest/30
+          disabled:cursor-not-allowed disabled:opacity-50
+          dark:bg-card-dark dark:text-ink-dark dark:placeholder-ink-soft-dark/50 dark:border-line-dark
+          dark:focus:border-forest-dark dark:focus:ring-forest-dark/30
+          ${error ? "border-clay focus:ring-clay/30 dark:border-clay-dark" : ""}
           ${className}
         `}
       />
 
       {error && (
-        <p className="mt-2 text-sm text-red-500">
+        <p className="mt-1.5 font-label text-xs text-clay dark:text-clay-dark">
           {error}
         </p>
       )}

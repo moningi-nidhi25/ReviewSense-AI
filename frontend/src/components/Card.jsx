@@ -7,7 +7,7 @@ function Card({
   action,
 }) {
   return (
-    <div className="border rounded-xl overflow-hidden shadow-md max-w-sm dark:bg-gray-800 dark:border-gray-700">
+    <div className="w-full max-w-sm overflow-hidden rounded-lg border border-line bg-card shadow-sm transition hover:shadow-md dark:border-line-dark dark:bg-card-dark">
       {image && (
         <img
           src={image}
@@ -16,25 +16,25 @@ function Card({
         />
       )}
 
-      <div className="p-5">
-        <h2 className="text-xl font-semibold mb-2 dark:text-white">
+      <div className="p-6">
+        <h2 className="mb-2 font-display text-xl font-semibold text-ink dark:text-ink-dark">
           {title}
         </h2>
 
-        <p className="text-gray-600 mb-4 dark:text-gray-300">
+        <p className="mb-4 text-sm leading-relaxed text-ink-soft dark:text-ink-soft-dark">
           {description}
         </p>
 
         {(sentiment || theme) && (
-          <div className="flex justify-between mb-4">
+          <div className="flex justify-between mb-4 gap-2">
             {sentiment && (
-              <span className="rounded bg-green-100 px-3 py-1 text-sm text-green-700">
+              <span className="rounded-full bg-forest/10 px-3 py-1 font-label text-xs uppercase tracking-wide text-forest dark:bg-forest-dark/10 dark:text-forest-dark">
                 {sentiment}
               </span>
             )}
 
             {theme && (
-              <span className="rounded bg-blue-100 px-3 py-1 text-sm text-blue-700">
+              <span className="rounded-full border border-line px-3 py-1 font-label text-xs uppercase tracking-wide text-ink-soft dark:border-line-dark dark:text-ink-soft-dark">
                 {theme}
               </span>
             )}

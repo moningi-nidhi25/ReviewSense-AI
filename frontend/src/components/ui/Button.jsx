@@ -21,17 +21,16 @@ export default function Button({
 }) {
   const variants = {
     primary:
-      "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500",
+      "bg-forest text-card hover:bg-forest-deep focus-visible:outline-forest dark:bg-forest-dark dark:text-ink-dark dark:hover:brightness-110",
     secondary:
-      "bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500",
+      "bg-ink text-card hover:bg-ink-soft focus-visible:outline-ink dark:bg-card-dark dark:text-ink-dark dark:hover:bg-line-dark",
     outline:
-      "border border-green-600 text-green-600 hover:bg-green-50 dark:hover:bg-gray-800 focus:ring-green-500",
+      "border border-forest text-forest hover:bg-forest/10 focus-visible:outline-forest dark:border-forest-dark dark:text-forest-dark dark:hover:bg-forest-dark/10",
   };
-
   const sizes = {
-    sm: "px-3 py-2 text-sm",
-    md: "px-5 py-2.5 text-base",
-    lg: "px-6 py-3 text-lg",
+    sm: "px-3 py-1.5 text-xs",
+    md: "px-5 py-2.5 text-sm",
+    lg: "px-6 py-3 base",
   };
 
   return (
@@ -40,16 +39,13 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       className={`
-        inline-flex items-center justify-center
-        rounded-lg
-        font-medium
-        transition-all
-        duration-200
-        focus:outline-none
-        focus:ring-2
-        focus:ring-offset-2
+        inline-flex items-center justify-center gap-2
+        rounded-md font-label font-semibold uppercase tracking-wide
+        transition-all duration-150
+        focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2
         disabled:opacity-50
         disabled:cursor-not-allowed
+        active:translate-y-px
         ${variants[variant]}
         ${sizes[size]}
         ${className}

@@ -69,7 +69,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 px-4 backdrop-blur-[2px] dark:bg-black/60"
       onClick={onClose}
     >
       <div
@@ -77,22 +77,23 @@ export default function Modal({
         tabIndex={-1}
         onKeyDown={handleKeyDown}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl outline-none dark:bg-gray-900"
+        className="w-full max-w-lg rounded-lg border border-line bg-card p-6 shadow-xl outline-none dark:border-line-dark dark:bg-card-dark"
       >
-        <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-xl font-semibold dark:text-white">
+        <div className="mb-5 flex items-center justify-between border-b border-line pb-4 dark:border-line-dark">
+          <h2 className="font-display text-xl font-semibold text-ink dark:text-ink-dark">
             {title}
           </h2>
 
           <button
             onClick={onClose}
-            className="text-2xl text-gray-500 hover:text-red-500"
+            aria-label="Close"
+            className="font-label text-xl text-ink-soft transition hover:text-clay dark:text-ink-soft-dark dark:hover:text-clay-dark"
           >
             &times;
           </button>
         </div>
 
-        <div className="text-gray-700 dark:text-gray-300">
+        <div className="text-ink-soft dark:text-ink-soft-dark">
           {children}
         </div>
       </div>

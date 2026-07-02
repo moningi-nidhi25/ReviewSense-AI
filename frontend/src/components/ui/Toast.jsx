@@ -19,6 +19,8 @@ export default function Toast() {
           background: "#1f2937",
           color: "#fff",
         },
+        success: { iconTheme: { primary: "#2f6b4f", secondary: "#edefe4" } },
+        error: { iconTheme: { primary: "#9c4a2e", secondary: "#edefe4" } },
       }}
     />
   );

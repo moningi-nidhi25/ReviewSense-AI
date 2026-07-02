@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Card from "./components/Card";
+import {Toast} from "./components/ui";
 
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
@@ -13,9 +13,11 @@ import Reviews from "./pages/Reviews";
 
 function App() {
   return (
-    <div className="dark:bg-gray-900 min-h-screen">
+    <div className=" min-h-screen bg-paper dark:bg-paper-dark">
+      {/* Single global toast container — pages just call showSuccessToast etc. */}
+      <Toast />
       <Navbar />
-      <main className="px-4 md:px-8 py-8 ">
+      <main className="mx-auto max-w-6xl px-4 py-8 md:px-8 ">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/pages/Dashboard" element={<Dashboard />} />

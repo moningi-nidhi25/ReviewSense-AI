@@ -22,7 +22,7 @@ function Login() {
 
             <button
               type="submit"
-              className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition dark:bg-green-500 dark:hover:bg-green-600"
+              className="w-full bg-forest text-white py-2 rounded-lg hover:bg-green-700 transition dark:bg-green-500 dark:hover:bg-green-600"
             >
               Sign In
             </button>

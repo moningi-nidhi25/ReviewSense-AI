@@ -4,14 +4,13 @@ import Hero from "../components/Hero";
 export default function Home() {
   return (
     <>
-      
-      <section className="py-8 dark:bg-gray-900">
-        <Hero />
-        <h2 className="text-3xl font-bold text-center mb-6 dark:text-white">
+      <Hero />
+      <section className="py-8">
+        <h2 className="mb-10 text-center font-display text-3xl font-semibold text-ink dark:text-ink-dark">
           Key Features
         </h2>
 
-        <div className="flex flex-wrap justify-center gap-6 dark:bg-gray-900">
+        <div className="flex flex-wrap justify-center gap-6">
           <Card
             title="Sentiment Analysis"
             description="Automatically classify guest reviews as positive, negative, or neutral."
