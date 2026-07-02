@@ -5,8 +5,13 @@ from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
 from fastapi import FastAPI
 from fastapi import HTTPException
+from database import supabase
 
 app = FastAPI()
+@app.get("/test-db")
+def test_db():
+    response = supabase.table("reviews").select("*").execute()
+    return response.data
 
 origins = [
     "http://localhost:5173",
@@ -21,23 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In-memory data
-reviews = [
-    {
-        "id": 1,
-        "guest_name": "John Doe",
-        "review": "The stay was amazing and the staff were very helpful.",
-        "sentiment": "Positive",
-        "theme": "Staff Service",
-    },
-    {
-        "id": 2,
-        "guest_name": "Sarah Smith",
-        "review": "Rooms were clean but food quality could be better.",
-        "sentiment": "Neutral",
-        "theme": "Food",
-    },
-]
+
 
 class Review(BaseModel):
     guest_name: str
@@ -47,73 +36,95 @@ class Review(BaseModel):
 
 @app.get("/api/reviews", status_code=200)
 def get_reviews():
-    return reviews
+    response = supabase.table("reviews").select("*").execute()
+    return response.data
 
 @app.get("/api/reviews/search", status_code=200)
 def search_reviews(q: str):
-    results = []
+    response = (
+        supabase
+        .table("reviews")
+        .select("*")
+        .ilike("review", f"%{q}%")
+        .execute()
+    )
 
-    for review in reviews:
-        if (
-            q.lower() in review["guest_name"].lower()
-            or q.lower() in review["review"].lower()
-        ):
-            results.append(review)
-
-    return results
+    return response.data
 
 @app.get("/api/reviews/{review_id}", status_code=200)
 def get_review(review_id: int):
-    for review in reviews:
-        if review["id"] == review_id:
-            return review
-
-    raise HTTPException(
-        status_code=404,
-        detail="Review not found"
+    response = (
+        supabase
+        .table("reviews")
+        .select("*")
+        .eq("id", review_id)
+        .execute()
     )
+
+    if not response.data:
+        raise HTTPException(
+            status_code=404,
+            detail="Review not found"
+        )
+
+    return response.data[0]
 
 @app.post("/api/reviews", status_code=201)
 def create_review(review: Review):
-    new_review = {
-        "id": len(reviews) + 1,
-        "guest_name": review.guest_name,
-        "review": review.review,
-        "sentiment": review.sentiment,
-        "theme": review.theme,
-    }
+    response = (
+        supabase
+        .table("reviews")
+        .insert({
+            "guest_name": review.guest_name,
+            "review": review.review,
+            "sentiment": review.sentiment,
+            "theme": review.theme,
+        })
+        .execute()
+    )
 
-    reviews.append(new_review)
-
-    return new_review
+    return response.data[0]
 
 @app.put("/api/reviews/{review_id}", status_code=200)
 def update_review(review_id: int, updated_review: Review):
-    for review in reviews:
-        if review["id"] == review_id:
-            review["guest_name"] = updated_review.guest_name
-            review["review"] = updated_review.review
-            review["sentiment"] = updated_review.sentiment
-            review["theme"] = updated_review.theme
-
-            return review
-
-    raise HTTPException(
-        status_code=404,
-        detail="Review not found"
+    response = (
+        supabase
+        .table("reviews")
+        .update({
+            "guest_name": updated_review.guest_name,
+            "review": updated_review.review,
+            "sentiment": updated_review.sentiment,
+            "theme": updated_review.theme,
+        })
+        .eq("id", review_id)
+        .execute()
     )
+
+    if not response.data:
+        raise HTTPException(
+            status_code=404,
+            detail="Review not found"
+        )
+
+    return response.data[0]
 
 @app.delete("/api/reviews/{review_id}", status_code=204)
 def delete_review(review_id: int):
-    for index, review in enumerate(reviews):
-        if review["id"] == review_id:
-            reviews.pop(index)
-            return
-
-    raise HTTPException(
-        status_code=404,
-        detail="Review not found"
+    response = (
+        supabase
+        .table("reviews")
+        .delete()
+        .eq("id", review_id)
+        .execute()
     )
+
+    if not response.data:
+        raise HTTPException(
+            status_code=404,
+            detail="Review not found"
+        )
+
+    return
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
