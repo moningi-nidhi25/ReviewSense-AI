@@ -49,7 +49,7 @@ ReviewSense AI is an AI-powered review analysis platform developed for the Trish
 * uv
 * python-dotenv
 
-### Database (Upcoming)
+### Database 
 
 * PostgreSQL (Supabase)
 
@@ -58,7 +58,23 @@ ReviewSense AI is an AI-powered review analysis platform developed for the Trish
 * Gemini / OpenAI API
 
 ---
+## Database Choice
 
+ReviewSense AI uses **PostgreSQL** hosted on **Supabase** as its primary database.
+
+### Why PostgreSQL?
+
+- Provides a structured relational database suitable for storing guest reviews.
+- Ensures data integrity and reliability through ACID compliance.
+- Supports efficient querying, filtering, and future relationships between entities such as reviews, homestays, and users.
+- Integrates seamlessly with FastAPI through the official Supabase Python SDK.
+
+### Why Supabase?
+
+- Managed PostgreSQL database with an intuitive dashboard.
+- Simplifies database management and development.
+- Provides secure authentication, REST APIs, and scalability for future enhancements.
+---
 ## Project Structure
 
 ```text
@@ -90,6 +106,68 @@ ReviewSense-AI/
 | DELETE | `/api/reviews/{id}`      | Delete a review            |
 | GET    | `/api/reviews/search?q=` | Search reviews             |
 
+---
+## Set Up the Database
+
+### 1. Create a Supabase Project
+
+- Sign in to Supabase.
+- Create a new project.
+- Copy the **Project URL** and **Service Role Key** from **Project Settings → API**.
+
+### 2. Configure Environment Variables
+
+Create a `.env` file inside the `backend` folder.
+
+```env
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_KEY=your_supabase_service_role_key
+```
+
+### 3. Install Dependencies
+
+```bash
+cd backend
+uv sync
+```
+
+If required:
+
+```bash
+uv add supabase python-dotenv
+```
+
+### 4. Create the Database Table
+
+Create a table named:
+
+```
+reviews_table
+```
+
+with the following columns:
+
+| Column | Type |
+|---------|------|
+| id | bigint (Primary Key) |
+| guest_name | text |
+| reviews | text |
+| sentiments | text |
+| theme | text |
+| ai_response | text (nullable) |
+| created_at | timestamp |
+
+### 5. Start the Backend
+
+```bash
+uv run uvicorn main:app --reload
+```
+
+The API will be available at:
+
+```
+http://127.0.0.1:8000
+```
 ---
 
 # How to Run the Backend Locally
