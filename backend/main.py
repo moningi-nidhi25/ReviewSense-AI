@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -13,9 +15,11 @@ def test_db():
     response = supabase.table("reviews_table").select("*").execute()
     return response.data
 
+load_dotenv()
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    os.getenv("CORS_ORIGIN"),
 ]
 
 app.add_middleware(
