@@ -62,18 +62,10 @@ ReviewSense AI is an AI-powered review analysis platform developed for the Trish
 
 ReviewSense AI uses **PostgreSQL** hosted on **Supabase** as its primary database.
 
-### Why PostgreSQL?
+### Why PostgreSQL + Superbase?
 
-- Provides a structured relational database suitable for storing guest reviews.
-- Ensures data integrity and reliability through ACID compliance.
-- Supports efficient querying, filtering, and future relationships between entities such as reviews, homestays, and users.
-- Integrates seamlessly with FastAPI through the official Supabase Python SDK.
+ PostgreSQL was chosen because it provides a structured relational database with ACID compliance, making it well suited for storing guest reviews and supporting future relationships between  homestays, and reviews. Supabase offers a managed PostgreSQL service with an easy-to-use dashboard and seamless integration with FastAPI.
 
-### Why Supabase?
-
-- Managed PostgreSQL database with an intuitive dashboard.
-- Simplifies database management and development.
-- Provides secure authentication, REST APIs, and scalability for future enhancements.
 ---
 ## Project Structure
 
@@ -245,3 +237,5 @@ http://localhost:5173
 ```
 
 ---
+## Schema Diagram
+<img width="816" height="414" alt="image" src="https://github.com/user-attachments/assets/42630797-2b26-4c43-99d0-7e56bcc9df67" />
