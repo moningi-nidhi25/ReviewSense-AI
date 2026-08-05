@@ -1,5 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { ThemeToggle } from "./ui";
+import { useAuth } from "../context/AuthContext";
+
 const LINKS = [
   { to: "/", label: "Home" },
   { to: "/pages/About", label: "About" },
@@ -10,6 +12,15 @@ const LINKS = [
 
 function Navbar() {
   const { pathname } = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    // Hard redirect (not client-side navigate) so any in-flight fetches or
+    // stale component state from the authenticated session can't leak
+    // through — the whole app remounts fresh, logged out.
+    window.location.href = "/";
+  };
 
   return (
     <nav className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur dark:border-line-dark dark:bg-paper-dark/95">
@@ -45,11 +56,25 @@ function Navbar() {
 
         <div className="flex items-center gap-3">
           <ThemeToggle />
-          <Link to="/pages/Login">
-            <button className="rounded-md bg-forest px-4 py-2 font-label text-xs font-semibold uppercase tracking-wide text-card transition hover:bg-forest-deep dark:bg-forest-dark dark:text-ink-dark dark:hover:brightness-110">
-              Login
-            </button>
-          </Link>
+          {isAuthenticated ? (
+            <div className="flex items-center gap-3">
+              <span className="hidden font-label text-xs text-ink-soft dark:text-ink-soft-dark md:inline">
+                {user?.email}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="rounded-md bg-ink px-4 py-2 font-label text-xs font-semibold uppercase tracking-wide text-card transition hover:bg-ink-soft dark:bg-card-dark dark:text-ink-dark dark:hover:bg-line-dark"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link to="/pages/Login">
+              <button className="rounded-md bg-forest px-4 py-2 font-label text-xs font-semibold uppercase tracking-wide text-card transition hover:bg-forest-deep dark:bg-forest-dark dark:text-ink-dark dark:hover:brightness-110">
+                Login
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
