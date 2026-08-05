@@ -16,10 +16,12 @@ import {
   showSuccessToast,
   showErrorToast,
 } from "../components/ui";
+import { useAuth } from "../context/AuthContext";
 
 const PAGE_SIZE = 6;
 
 export default function Reviews() {
+  const { user } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -157,6 +159,43 @@ export default function Reviews() {
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const displayedReviews = reviews.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  const handleExportCSV = () => {
+    if (!reviews || reviews.length === 0) {
+      showErrorToast("No reviews available to export.");
+      return;
+    }
+
+    const headers = ["ID", "Guest Name", "Review Text", "Sentiment", "Themes", "AI Response"];
+    const rows = reviews.map((r) => [
+      r.id,
+      `"${(r.guest_name || "").replace(/"/g, '""')}"`,
+      `"${(r.reviews || "").replace(/"/g, '""')}"`,
+      `"${(r.sentiments || "").replace(/"/g, '""')}"`,
+      `"${(r.theme || "").replace(/"/g, '""')}"`,
+      `"${(r.ai_response || "").replace(/"/g, '""')}"`,
+    ]);
+
+    const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    const cleanName = (user?.homestay_name || "ReviewSense").replace(/[^a-zA-Z0-9]/g, "_");
+    link.setAttribute("download", `${cleanName}_All_Guest_Reviews.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showSuccessToast("CSV Report downloaded successfully!");
+  };
+
+  const handleExportPDF = () => {
+    showSuccessToast("Preparing Executive PDF Report...");
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  };
+
   return (
     <div className="py-6">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -168,7 +207,24 @@ export default function Reviews() {
             Guest Reviews
           </h1>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>+ Log a Review</Button>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-1.5 rounded-md border border-line bg-card px-3 py-2 font-label text-xs font-semibold uppercase tracking-wide text-ink transition hover:border-forest hover:text-forest dark:border-line-dark dark:bg-card-dark dark:text-ink-dark dark:hover:border-forest-dark dark:hover:text-forest-dark"
+          >
+            <span>📥 Export CSV</span>
+          </button>
+
+          <button
+            onClick={handleExportPDF}
+            className="inline-flex items-center gap-1.5 rounded-md border border-line bg-card px-3 py-2 font-label text-xs font-semibold uppercase tracking-wide text-ink transition hover:border-forest hover:text-forest dark:border-line-dark dark:bg-card-dark dark:text-ink-dark dark:hover:border-forest-dark dark:hover:text-forest-dark"
+          >
+            <span>🖨️ Export PDF</span>
+          </button>
+
+          <Button onClick={() => setIsModalOpen(true)}>+ Log a Review</Button>
+        </div>
       </div>
 
       <div className="mb-8 max-w-md">

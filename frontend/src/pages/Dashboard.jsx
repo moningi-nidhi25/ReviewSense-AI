@@ -102,10 +102,47 @@ export default function Dashboard() {
     setSelectedTheme("all");
   };
 
+  const handleExportCSV = () => {
+    if (!recent || recent.length === 0) {
+      showErrorToast("No reviews available to export.");
+      return;
+    }
+
+    const headers = ["ID", "Guest Name", "Review Text", "Sentiment", "Themes", "AI Response"];
+    const rows = recent.map((r) => [
+      r.id,
+      `"${(r.guest_name || "").replace(/"/g, '""')}"`,
+      `"${(r.reviews || "").replace(/"/g, '""')}"`,
+      `"${(r.sentiments || "").replace(/"/g, '""')}"`,
+      `"${(r.theme || "").replace(/"/g, '""')}"`,
+      `"${(r.ai_response || "").replace(/"/g, '""')}"`,
+    ]);
+
+    const csvContent = [headers.join(","), ...rows.map((row) => row.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    const cleanName = (user?.homestay_name || "ReviewSense").replace(/[^a-zA-Z0-9]/g, "_");
+    link.setAttribute("download", `${cleanName}_Guest_Reviews_Report.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showSuccessToast("CSV Report downloaded successfully!");
+  };
+
+  const handleExportPDF = () => {
+    showSuccessToast("Preparing Executive PDF Report...");
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  };
+
   return (
     <div className="mx-auto max-w-6xl py-6">
       {/* Header */}
-      <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="font-label text-xs font-semibold uppercase tracking-[0.2em] text-forest dark:text-forest-dark">
             {user?.homestay_name ? `🏡 ${user.homestay_name}` : "Executive Analytics"}
@@ -115,14 +152,30 @@ export default function Dashboard() {
           </h1>
         </div>
 
-        {isFiltered && (
+        <div className="flex flex-wrap items-center gap-2">
+          {isFiltered && (
+            <button
+              onClick={clearFilters}
+              className="inline-flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 font-label text-xs font-semibold uppercase tracking-wide text-ink-soft transition hover:bg-forest/10 hover:text-forest dark:border-line-dark dark:text-ink-soft-dark dark:hover:bg-forest-dark/10 dark:hover:text-forest-dark"
+            >
+              <span>✕ Clear Filters</span>
+            </button>
+          )}
+
           <button
-            onClick={clearFilters}
-            className="inline-flex items-center gap-1.5 rounded-md border border-line px-3 py-1.5 font-label text-xs font-semibold uppercase tracking-wide text-ink-soft transition hover:bg-forest/10 hover:text-forest dark:border-line-dark dark:text-ink-soft-dark dark:hover:bg-forest-dark/10 dark:hover:text-forest-dark"
+            onClick={handleExportCSV}
+            className="inline-flex items-center gap-1.5 rounded-md border border-line bg-card px-3 py-1.5 font-label text-xs font-semibold uppercase tracking-wide text-ink transition hover:border-forest hover:text-forest dark:border-line-dark dark:bg-card-dark dark:text-ink-dark dark:hover:border-forest-dark dark:hover:text-forest-dark"
           >
-            <span>✕ Clear Active Filters</span>
+            <span>📥 Export CSV</span>
           </button>
-        )}
+
+          <button
+            onClick={handleExportPDF}
+            className="inline-flex items-center gap-1.5 rounded-md bg-forest px-3.5 py-1.5 font-label text-xs font-semibold uppercase tracking-wide text-card shadow-sm transition hover:bg-forest-deep dark:bg-forest-dark dark:text-paper-dark dark:hover:brightness-110"
+          >
+            <span>🖨️ Export PDF</span>
+          </button>
+        </div>
       </div>
 
       {/* Interactive Stat Cards Grid */}
