@@ -225,9 +225,23 @@ export default function Reviews() {
                     rotate={i % 2 === 0 ? -6 : 5}
                   />
                   <span className="rounded-full border border-line px-3 py-1 font-label text-[10px] uppercase tracking-wide text-ink-soft dark:border-line-dark dark:text-ink-soft-dark">
-                    tag: {review.theme}
+                    tag: {review.theme || "General"}
                   </span>
                 </div>
+
+                {review.ai_response && (
+                  <div className="mt-4 rounded-md border border-forest/20 bg-forest/5 p-3.5 dark:border-forest-dark/30 dark:bg-forest-dark/10">
+                    <div className="mb-1.5 flex items-center gap-1.5 font-label text-[11px] font-semibold uppercase tracking-wider text-forest dark:text-forest-dark">
+                      <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                      </svg>
+                      <span>AI Management Response</span>
+                    </div>
+                    <p className="text-xs italic leading-relaxed text-ink-soft dark:text-ink-soft-dark">
+                      "{review.ai_response}"
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
