@@ -1,23 +1,19 @@
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import { Button, Input, showErrorToast, showSuccessToast } from "../components/ui";
 import { useAuth } from "../context/AuthContext";
 import { googleLoginUrl, githubLoginUrl } from "../services/api";
 
-function Login() {
-  console.log(import.meta.env.VITE_API_URL);
-console.log(googleLoginUrl);
-  const { login } = useAuth();
+function Register() {
+  const { register } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  const redirectTo = location.state?.from?.pathname || "/pages/Dashboard";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,15 +23,23 @@ console.log(googleLoginUrl);
       setError("Email and password are required.");
       return;
     }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
 
     setSubmitting(true);
     try {
-      await login(email.trim(), password);
-      showSuccessToast("Welcome back!");
-      navigate(redirectTo, { replace: true });
+      await register(email.trim(), password);
+      showSuccessToast("Account created — welcome!");
+      navigate("/pages/Dashboard", { replace: true });
     } catch (err) {
       const message =
-        err.response?.data?.detail || "Invalid email or password.";
+        err.response?.data?.detail || "Could not create your account.";
       setError(message);
       showErrorToast(message);
     } finally {
@@ -46,8 +50,8 @@ console.log(googleLoginUrl);
   return (
     <div className="flex items-center justify-center p-4 dark:bg-gray-900 min-h-screen">
       <Card
-        title="Welcome to Review Sense AI"
-        description="Sign in to analyze customer reviews, track sentiment trends, and uncover actionable insights."
+        title="Create Your Account"
+        description="Join Review Sense AI to start turning guest feedback into insight."
         action={
           <form className="space-y-4" onSubmit={handleSubmit}>
             <Input
@@ -61,9 +65,17 @@ console.log(googleLoginUrl);
             <Input
               label="Password"
               type="password"
-              placeholder="••••••••"
+              placeholder="At least 8 characters"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <Input
+              label="Confirm Password"
+              type="password"
+              placeholder="Re-enter your password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
 
             {error && (
@@ -71,7 +83,7 @@ console.log(googleLoginUrl);
             )}
 
             <Button type="submit" disabled={submitting} className="w-full">
-              {submitting ? "Signing In..." : "Sign In"}
+              {submitting ? "Creating Account..." : "Sign Up"}
             </Button>
 
             <div className="flex items-center gap-3">
@@ -96,9 +108,9 @@ console.log(googleLoginUrl);
             </div>
 
             <p className="text-center text-sm text-ink-soft dark:text-ink-soft-dark">
-              Don't have an account?
-              <Link to="/pages/Register" className="text-forest ml-1 hover:underline dark:text-forest-dark">
-                Sign Up
+              Already have an account?
+              <Link to="/pages/Login" className="text-forest ml-1 hover:underline dark:text-forest-dark">
+                Sign In
               </Link>
             </p>
           </form>
@@ -108,4 +120,4 @@ console.log(googleLoginUrl);
   );
 }
 
-export default Login;
+export default Register;
