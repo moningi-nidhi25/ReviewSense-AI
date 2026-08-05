@@ -9,6 +9,7 @@ function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
+  const [homestayName, setHomestayName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -34,7 +35,7 @@ function Register() {
 
     setSubmitting(true);
     try {
-      await register(email.trim(), password);
+      await register(email.trim(), password, homestayName.trim());
       showSuccessToast("Account created — welcome!");
       navigate("/pages/Dashboard", { replace: true });
     } catch (err) {
@@ -54,6 +55,13 @@ function Register() {
         description="Join Review Sense AI to start turning guest feedback into insight."
         action={
           <form className="space-y-4" onSubmit={handleSubmit}>
+            <Input
+              label="Homestay / Property Name"
+              placeholder="e.g. Pine Valley Homestay"
+              value={homestayName}
+              onChange={(e) => setHomestayName(e.target.value)}
+            />
+
             <Input
               label="Email Address"
               type="email"

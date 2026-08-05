@@ -15,8 +15,19 @@ def register_user(db: Session, payload: RegisterRequest) -> User:
         # field of the DB constraint tripped.
         raise HTTPException(status_code=400, detail="An account with this email already exists.")
 
-    user = User(email=email, hashed_password=hash_password(payload.password))
+    user = User(
+        email=email,
+        hashed_password=hash_password(payload.password),
+        homestay_name=payload.homestay_name,
+    )
     db.add(user)
+    db.commit()
+    db.refresh(user)
+    return user
+
+
+def update_user_homestay_name(db: Session, user: User, homestay_name: str) -> User:
+    user.homestay_name = homestay_name.strip()
     db.commit()
     db.refresh(user)
     return user

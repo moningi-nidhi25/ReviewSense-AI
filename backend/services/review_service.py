@@ -60,7 +60,9 @@ def get_review(db: Session, owner: User, review_id: int):
 
 
 def create_review(db: Session, owner: User, review: ReviewCreate):
-    ai_result = ai_service.analyze_review(review.guest_name, review.reviews)
+    ai_result = ai_service.analyze_review(
+        review.guest_name, review.reviews, homestay_name=owner.homestay_name
+    )
 
     db_review = Review(
         guest_name=review.guest_name,
@@ -92,7 +94,9 @@ def update_review(db: Session, owner: User, review_id: int, updated_review: Revi
     if not db_review:
         return None
 
-    ai_result = ai_service.analyze_review(updated_review.guest_name, updated_review.reviews)
+    ai_result = ai_service.analyze_review(
+        updated_review.guest_name, updated_review.reviews, homestay_name=owner.homestay_name
+    )
 
     db_review.guest_name = updated_review.guest_name
     db_review.reviews = updated_review.reviews

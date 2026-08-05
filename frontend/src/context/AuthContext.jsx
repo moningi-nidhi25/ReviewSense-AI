@@ -62,8 +62,12 @@ export function AuthProvider({ children }) {
   );
 
   const register = useCallback(
-    async (email, password) => {
-      const res = await registerUser({ email, password });
+    async (email, password, homestayName) => {
+      const res = await registerUser({
+        email,
+        password,
+        homestay_name: homestayName ? homestayName.trim() : undefined,
+      });
       persist(res.data.access_token, res.data.user);
       return res.data;
     },

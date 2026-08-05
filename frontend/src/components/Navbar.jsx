@@ -7,7 +7,6 @@ const LINKS = [
   { to: "/pages/About", label: "About" },
   { to: "/pages/Dashboard", label: "Dashboard" },
   { to: "/pages/Reviews", label: "Reviews" },
-  { to: "/pages/Demo", label: "Demo" },
 ];
 
 function Navbar() {
@@ -58,8 +57,8 @@ function Navbar() {
           <ThemeToggle />
           {isAuthenticated ? (
             <div className="flex items-center gap-3">
-              <span className="hidden font-label text-xs text-ink-soft dark:text-ink-soft-dark md:inline">
-                {user?.email}
+              <span className="hidden font-label text-xs font-semibold text-forest dark:text-forest-dark md:inline">
+                🏡 {user?.homestay_name || user?.email}
               </span>
               <button
                 onClick={handleLogout}

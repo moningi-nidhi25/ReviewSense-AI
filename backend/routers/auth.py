@@ -8,7 +8,7 @@ from core.deps import get_current_user
 from core.limiter import limiter
 from core.oauth import oauth
 from models.user import User
-from schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserOut
+from schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UpdateProfileRequest, UserOut
 from services import auth_service
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
@@ -16,7 +16,10 @@ router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 def _to_token_response(user: User) -> TokenResponse:
     token = auth_service.issue_token(user)
-    return TokenResponse(access_token=token, user=UserOut(id=str(user.id), email=user.email))
+    return TokenResponse(
+        access_token=token,
+        user=UserOut(id=str(user.id), email=user.email, homestay_name=user.homestay_name),
+    )
 
 
 @router.post("/register", status_code=201, response_model=TokenResponse)
@@ -42,7 +45,25 @@ def logout():
 
 @router.get("/me", response_model=UserOut)
 def me(current_user: User = Depends(get_current_user)):
-    return UserOut(id=str(current_user.id), email=current_user.email)
+    return UserOut(
+        id=str(current_user.id),
+        email=current_user.email,
+        homestay_name=current_user.homestay_name,
+    )
+
+
+@router.put("/profile", response_model=UserOut)
+def update_profile(
+    payload: UpdateProfileRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    updated = auth_service.update_user_homestay_name(db, current_user, payload.homestay_name)
+    return UserOut(
+        id=str(updated.id),
+        email=updated.email,
+        homestay_name=updated.homestay_name,
+    )
 
 
 # --------------------------------------------------------------------------

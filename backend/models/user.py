@@ -18,6 +18,7 @@ class User(Base):
 
     # Populated when the account was created/linked via OAuth.
     oauth_provider = Column(String, nullable=True)  # "google" | "github"
-    oauth_id = Column(String, nullable=True)
+    # Optional custom name of the user's homestay (e.g. "Pine Valley Homestay")
+    homestay_name = Column(String, nullable=True)
 
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
