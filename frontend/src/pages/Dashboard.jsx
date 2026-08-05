@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader, showErrorToast, showSuccessToast } from "../components/ui";
 import { getDashboardSummary } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 function StatCard({ label, value, subtext, colorClass, isActive, onClick }) {
   return (
@@ -28,6 +29,7 @@ function StatCard({ label, value, subtext, colorClass, isActive, onClick }) {
 }
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   
@@ -106,7 +108,7 @@ export default function Dashboard() {
       <div className="mb-8 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="font-label text-xs font-semibold uppercase tracking-[0.2em] text-forest dark:text-forest-dark">
-            Executive Analytics
+            {user?.homestay_name ? `🏡 ${user.homestay_name}` : "Executive Analytics"}
           </p>
           <h1 className="font-display text-4xl font-semibold text-ink dark:text-ink-dark">
             Analytics & Insights
