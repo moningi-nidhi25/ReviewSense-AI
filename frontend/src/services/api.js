@@ -35,6 +35,7 @@ export const createReview = (reviewData) => api.post("/reviews", reviewData);
 export const updateReview = (id, reviewData) => api.put(`/reviews/${id}`, reviewData);
 export const deleteReview = (id) => api.delete(`/reviews/${id}`);
 export const searchReviews = (query) => api.get(`/reviews/search?q=${encodeURIComponent(query)}`);
+export const regenerateResponse = (id, tone) => api.post(`/reviews/${id}/regenerate-response`, { tone });
 
 // ---- Dashboard ----
 export const getDashboardSummary = () => api.get("/dashboard/summary");

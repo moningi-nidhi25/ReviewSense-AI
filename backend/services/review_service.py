@@ -61,7 +61,10 @@ def get_review(db: Session, owner: User, review_id: int):
 
 def create_review(db: Session, owner: User, review: ReviewCreate):
     ai_result = ai_service.analyze_review(
-        review.guest_name, review.reviews, homestay_name=owner.homestay_name
+        review.guest_name,
+        review.reviews,
+        homestay_name=owner.homestay_name,
+        tone=review.tone or "Warm",
     )
 
     db_review = Review(
@@ -95,7 +98,10 @@ def update_review(db: Session, owner: User, review_id: int, updated_review: Revi
         return None
 
     ai_result = ai_service.analyze_review(
-        updated_review.guest_name, updated_review.reviews, homestay_name=owner.homestay_name
+        updated_review.guest_name,
+        updated_review.reviews,
+        homestay_name=owner.homestay_name,
+        tone=updated_review.tone or "Warm",
     )
 
     db_review.guest_name = updated_review.guest_name
@@ -104,6 +110,24 @@ def update_review(db: Session, owner: User, review_id: int, updated_review: Revi
     db_review.theme = ai_result["theme"]
     db_review.ai_response = ai_result["ai_response"]
 
+    db.commit()
+    db.refresh(db_review)
+    return _serialize(db_review)
+
+
+def regenerate_ai_response(db: Session, owner: User, review_id: int, tone: str = "Warm"):
+    db_review = _get_owned_or_403(db, owner, review_id)
+    if not db_review:
+        return None
+
+    ai_result = ai_service.analyze_review(
+        db_review.guest_name,
+        db_review.reviews,
+        homestay_name=owner.homestay_name,
+        tone=tone,
+    )
+
+    db_review.ai_response = ai_result["ai_response"]
     db.commit()
     db.refresh(db_review)
     return _serialize(db_review)

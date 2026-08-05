@@ -30,17 +30,18 @@ def get_summary(db: Session, owner: User) -> dict:
     ]
     sentiment_breakdown.sort(key=lambda row: row["count"], reverse=True)
 
-    theme_rows = (
-        db.query(Review.theme, func.count(Review.id).label("count"))
-        .filter(Review.owner_id == owner.id)
-        .group_by(Review.theme)
-        .order_by(func.count(Review.id).desc())
-        .limit(6)
-        .all()
-    )
-    top_themes = [
-        {"theme": theme or "Unclassified", "count": count} for theme, count in theme_rows
-    ]
+    all_reviews = base.all()
+    theme_counts = {}
+    for r in all_reviews:
+        if r.theme:
+            t_list = [t.strip() for t in r.theme.split(",") if t.strip()]
+            for t in t_list:
+                theme_counts[t] = theme_counts.get(t, 0) + 1
+        else:
+            theme_counts["Unclassified"] = theme_counts.get("Unclassified", 0) + 1
+
+    sorted_themes = sorted(theme_counts.items(), key=lambda x: x[1], reverse=True)[:6]
+    top_themes = [{"theme": t, "count": cnt} for t, cnt in sorted_themes]
 
     recent = base.order_by(Review.id.desc()).limit(5).all()
     recent_reviews = [

@@ -65,6 +65,22 @@ def update_review(
     return review
 
 
+from schemas.review import RegenerateResponseRequest, ReviewCreate, ReviewUpdate
+
+
+@router.post("/{review_id}/regenerate-response", status_code=200)
+def regenerate_ai_response(
+    review_id: int,
+    payload: RegenerateResponseRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    review = review_service.regenerate_ai_response(db, current_user, review_id, tone=payload.tone)
+    if not review:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return review
+
+
 @router.delete("/{review_id}", status_code=204)
 def delete_review(
     review_id: int,

@@ -5,13 +5,26 @@ from core.config import settings
 logger = logging.getLogger(__name__)
 
 
-def analyze_review(guest_name: str, review_text: str, homestay_name: str | None = None) -> dict:
-    """Analyzes a review using Gemini AI to extract sentiment, theme, and generate an AI management response.
+def analyze_review(
+    guest_name: str,
+    review_text: str,
+    homestay_name: str | None = None,
+    tone: str = "Warm",
+) -> dict:
+    """Analyzes a review using Gemini AI to extract sentiment, multiple themes, and generate a customized management response.
 
     Returns:
         dict: {"sentiments": str, "theme": str, "ai_response": str}
     """
     homestay_label = homestay_name.strip() if homestay_name and homestay_name.strip() else "our homestay"
+    tone_clean = tone.strip().capitalize() if tone else "Warm"
+
+    if tone_clean == "Formal":
+        tone_instruction = "Write a formal, professional, and courteous executive response."
+    elif tone_clean == "Promotional":
+        tone_instruction = "Write a warm response and include an invitation to return with a 10% discount promo on their next stay."
+    else:
+        tone_instruction = "Write a warm, friendly, and hospitable management response."
 
     if settings.GEMINI_API_KEY:
         try:
@@ -26,11 +39,16 @@ Analyze this guest review:
 Guest Name: {guest_name}
 Review: "{review_text}"
 
-Respond strictly with a JSON object matching this schema:
+Requirements:
+1. "sentiments": "Positive" | "Neutral" | "Negative"
+2. "themes": Array of ALL matching categories present in the review from ["Hospitality", "Cleanliness", "Food", "Location", "Amenities", "Service", "Value"].
+3. "ai_response": {tone_instruction} Address {guest_name} by name in 2-3 sentences.
+
+Respond strictly with a JSON object:
 {{
-  "sentiments": "Positive" | "Neutral" | "Negative",
-  "theme": "Hospitality" | "Cleanliness" | "Food" | "Location" | "Amenities" | "Service" | "Value",
-  "ai_response": "A polite, personalized 2-sentence reply from {homestay_label} management addressing {guest_name}."
+  "sentiments": "Positive",
+  "themes": ["Hospitality", "Food"],
+  "ai_response": "Dear {guest_name}..."
 }}
 """
 
@@ -44,9 +62,15 @@ Respond strictly with a JSON object matching this schema:
 
             if response and response.text:
                 data = json.loads(response.text)
+                raw_themes = data.get("themes") or [data.get("theme", "General")]
+                if isinstance(raw_themes, str):
+                    themes_str = raw_themes
+                else:
+                    themes_str = ", ".join([str(t).strip().capitalize() for t in raw_themes if t])
+
                 return {
                     "sentiments": str(data.get("sentiments", "Neutral")).capitalize(),
-                    "theme": str(data.get("theme", "General")).capitalize(),
+                    "theme": themes_str or "General",
                     "ai_response": str(data.get("ai_response", "")).strip(),
                 }
         except Exception as e:
@@ -73,26 +97,40 @@ Respond strictly with a JSON object matching this schema:
     else:
         sentiment = "Neutral"
 
+    detected_themes = []
     if any(w in text_lower for w in ["food", "breakfast", "dinner", "meal", "coffee", "tea", "cook"]):
-        theme = "Food"
-    elif any(w in text_lower for w in ["clean", "dirty", "towel", "bed", "bathroom", "room", "linen"]):
-        theme = "Cleanliness"
-    elif any(w in text_lower for w in ["host", "staff", "owner", "friendly", "warm", "helpful", "welcome"]):
-        theme = "Hospitality"
-    elif any(w in text_lower for w in ["view", "mountain", "location", "nature", "walk", "reach"]):
-        theme = "Location"
-    else:
-        theme = "Service"
+        detected_themes.append("Food")
+    if any(w in text_lower for w in ["clean", "dirty", "towel", "bed", "bathroom", "room", "linen"]):
+        detected_themes.append("Cleanliness")
+    if any(w in text_lower for w in ["host", "staff", "owner", "friendly", "warm", "helpful", "welcome"]):
+        detected_themes.append("Hospitality")
+    if any(w in text_lower for w in ["view", "mountain", "location", "nature", "walk", "reach"]):
+        detected_themes.append("Location")
 
-    if sentiment == "Positive":
-        resp = f"Dear {guest_name}, thank you so much for your kind review! We are delighted that you had a wonderful stay at {homestay_label} and hope to welcome you back soon."
-    elif sentiment == "Negative":
-        resp = f"Dear {guest_name}, thank you for sharing your feedback. The team at {homestay_label} sincerely apologizes for the inconveniences during your stay and is taking immediate measures to improve."
-    else:
-        resp = f"Dear {guest_name}, thank you for reviewing your stay at {homestay_label}. We appreciate your feedback and look forward to offering you an even better experience next time!"
+    if not detected_themes:
+        detected_themes.append("Service")
+
+    themes_str = ", ".join(detected_themes)
+
+    if tone_clean == "Formal":
+        if sentiment == "Positive":
+            resp = f"Dear {guest_name}, thank you for reviewing {homestay_label}. We appreciate your positive feedback and look forward to welcoming you again."
+        elif sentiment == "Negative":
+            resp = f"Dear {guest_name}, thank you for contacting {homestay_label}. We take your comments seriously and are investigating these issues to improve our operational standards."
+        else:
+            resp = f"Dear {guest_name}, thank you for your review. We have noted your observations and will continue striving to enhance our service."
+    elif tone_clean == "Promotional":
+        resp = f"Dear {guest_name}, thank you so much for staying at {homestay_label}! As a token of our appreciation, please use promo code RETURN10 for 10% off your next booking with us."
+    else: # Warm
+        if sentiment == "Positive":
+            resp = f"Dear {guest_name}, thank you so much for your lovely review! We are thrilled you had a wonderful time at {homestay_label} and hope to welcome you back soon."
+        elif sentiment == "Negative":
+            resp = f"Dear {guest_name}, thank you for sharing your feedback. The team at {homestay_label} sincerely apologizes for the inconveniences during your stay."
+        else:
+            resp = f"Dear {guest_name}, thank you for reviewing your stay at {homestay_label}. We appreciate your feedback and look forward to offering you an even better experience next time!"
 
     return {
         "sentiments": sentiment,
-        "theme": theme,
+        "theme": themes_str,
         "ai_response": resp,
     }
