@@ -17,3 +17,4 @@ class ReviewOut(BaseModel):
     reviews: str
     sentiments: str | None = None
     theme: str | None = None
+    ai_response: str | None = None

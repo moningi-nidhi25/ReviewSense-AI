@@ -15,6 +15,7 @@ class Review(Base):
     reviews = Column(String, nullable=False)
     sentiments = Column(String, nullable=True)
     theme = Column(String, nullable=True)
+    ai_response = Column(String, nullable=True)
 
     # Which account this review belongs to. Nullable so pre-existing rows
     # (created before auth existed) don't break — they just won't show up

@@ -8,6 +8,8 @@ from models.review import Review
 from models.user import User
 from schemas.review import ReviewCreate, ReviewUpdate
 
+from services import ai_service
+
 logger = logging.getLogger(__name__)
 
 
@@ -18,6 +20,7 @@ def _serialize(review: Review) -> dict:
         "reviews": review.reviews,
         "sentiments": review.sentiments,
         "theme": review.theme,
+        "ai_response": review.ai_response,
     }
 
 
@@ -57,15 +60,14 @@ def get_review(db: Session, owner: User, review_id: int):
 
 
 def create_review(db: Session, owner: User, review: ReviewCreate):
-    # Later AI will generate these
-    sentiment = "Neutral"
-    theme = "General"
+    ai_result = ai_service.analyze_review(review.guest_name, review.reviews)
 
     db_review = Review(
         guest_name=review.guest_name,
         reviews=review.reviews,
-        sentiments=sentiment,
-        theme=theme,
+        sentiments=ai_result["sentiments"],
+        theme=ai_result["theme"],
+        ai_response=ai_result["ai_response"],
         owner_id=owner.id,
     )
     db.add(db_review)
@@ -90,8 +92,14 @@ def update_review(db: Session, owner: User, review_id: int, updated_review: Revi
     if not db_review:
         return None
 
+    ai_result = ai_service.analyze_review(updated_review.guest_name, updated_review.reviews)
+
     db_review.guest_name = updated_review.guest_name
     db_review.reviews = updated_review.reviews
+    db_review.sentiments = ai_result["sentiments"]
+    db_review.theme = ai_result["theme"]
+    db_review.ai_response = ai_result["ai_response"]
+
     db.commit()
     db.refresh(db_review)
     return _serialize(db_review)

@@ -50,6 +50,7 @@ def get_summary(db: Session, owner: User) -> dict:
             "reviews": r.reviews,
             "sentiments": r.sentiments,
             "theme": r.theme,
+            "ai_response": r.ai_response,
         }
         for r in recent
     ]
