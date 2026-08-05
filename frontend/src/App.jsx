@@ -10,7 +10,6 @@ import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Demo from "./pages/Demo";
 import Reviews from "./pages/Reviews";
 import OAuthCallback from "./pages/OAuthCallback";
 
@@ -27,7 +26,6 @@ function App() {
           <Route path="/pages/Login" element={<Login />} />
           <Route path="/pages/Register" element={<Register />} />
           <Route path="/oauth-callback" element={<OAuthCallback />} />
-          <Route path="/pages/Demo" element={<Demo />} />
 
           {/* Protected — redirect unauthenticated visitors to /pages/Login */}
           <Route
