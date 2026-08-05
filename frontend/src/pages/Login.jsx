@@ -3,11 +3,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import { Button, Input, showErrorToast, showSuccessToast } from "../components/ui";
 import { useAuth } from "../context/AuthContext";
-import { googleLoginUrl, githubLoginUrl } from "../services/api";
+import { googleLoginUrl } from "../services/api";
 
 function Login() {
-  console.log(import.meta.env.VITE_API_URL);
-console.log(googleLoginUrl);
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -82,15 +80,10 @@ console.log(googleLoginUrl);
               <div className="h-px flex-1 bg-line dark:bg-line-dark" />
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div>
               <a href={googleLoginUrl} className="w-full">
                 <Button type="button" variant="outline" className="w-full">
-                  Google
-                </Button>
-              </a>
-              <a href={githubLoginUrl} className="w-full">
-                <Button type="button" variant="outline" className="w-full">
-                  GitHub
+                  Continue with Google
                 </Button>
               </a>
             </div>

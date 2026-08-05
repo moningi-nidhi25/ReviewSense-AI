@@ -139,6 +139,7 @@ export default function Reviews() {
   }, []);
 
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const displayedReviews = reviews.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="py-6">
@@ -181,7 +182,7 @@ export default function Reviews() {
       ) : (
         <>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {reviews.map((review, i) => (
+            {displayedReviews.map((review, i) => (
               <div
                 key={review.id}
                 className="rounded-lg border border-line bg-card p-6 shadow-sm transition hover:shadow-md dark:border-line-dark dark:bg-card-dark"
@@ -231,7 +232,7 @@ export default function Reviews() {
             ))}
           </div>
 
-          {!query.trim() && totalPages > 1 && (
+          {totalPages > 1 && (
             <div className="mt-10 flex items-center justify-center gap-4">
               <Button
                 variant="outline"

@@ -46,6 +46,5 @@ export const getCurrentUser = () => api.get("/auth/me");
 export const logoutUser = () => api.post("/auth/logout");
 
 export const googleLoginUrl = `${import.meta.env.VITE_API_URL}/auth/google/login`;
-export const githubLoginUrl = `${import.meta.env.VITE_API_URL}/auth/github/login`;
 
 export default api;

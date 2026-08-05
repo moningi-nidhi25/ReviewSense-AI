@@ -67,35 +67,3 @@ async def google_callback(request: Request, db: Session = Depends(get_db)):
     jwt_token = auth_service.issue_token(user)
     return RedirectResponse(f"{settings.FRONTEND_URL}/oauth-callback?token={jwt_token}")
 
-
-# --------------------------------------------------------------------------
-# OAuth: GitHub
-# --------------------------------------------------------------------------
-
-
-@router.get("/github/login")
-async def github_login(request: Request):
-    redirect_uri = str(request.url_for("github_callback"))
-    return await oauth.github.authorize_redirect(request, redirect_uri)
-
-
-@router.get("/github/callback", name="github_callback")
-async def github_callback(request: Request, db: Session = Depends(get_db)):
-    token = await oauth.github.authorize_access_token(request)
-    profile_resp = await oauth.github.get("user", token=token)
-    profile = profile_resp.json()
-
-    email = profile.get("email")
-    if not email:
-        # GitHub only returns a primary email here if the user made it public;
-        # otherwise fall back to the dedicated emails endpoint.
-        emails_resp = await oauth.github.get("user/emails", token=token)
-        emails = emails_resp.json()
-        primary = next((e for e in emails if e.get("primary")), emails[0] if emails else None)
-        email = primary["email"] if primary else f"{profile['id']}@users.noreply.github.com"
-
-    user = auth_service.get_or_create_oauth_user(
-        db, email=email, provider="github", oauth_id=str(profile.get("id"))
-    )
-    jwt_token = auth_service.issue_token(user)
-    return RedirectResponse(f"{settings.FRONTEND_URL}/oauth-callback?token={jwt_token}")
